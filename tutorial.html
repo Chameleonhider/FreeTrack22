@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8"/>
+<style media="screen">
+	table {
+		border-collapse: collapse;
+		margin: 1%;
+		align: left;
+	}
+	th {
+		font-weight: normal;
+		border: 1px solid #ddd;
+		padding: 6px;
+		text-align: left;
+		background-color: #7bcced;
+	}
+	td {
+		border: 1px solid #ddd;
+		padding: 6px;
+		text-align: left;
+	}
+	tr:hover {
+		background-color: #ddd;
+	}
+	body {
+		font-family: verdana;
+	}
+	h1 {
+		font-size: 160%;
+	}
+	h2 {
+		font-size: 140%;
+	}
+	p {
+		font-size: 100%;
+	}
+</style>
+<title>Setting up FreeTrack 2.2 with ArmA 3</title>
+</head>
+<!-- BODY ########################################################################################################## -->
+<body>
+<h1>Setting up FreeTrack 2.2 with ArmA 3</h1>
+	---
+	<p>
+	Old website: <a href="https://www.free-track.net/english/">free-track.net</a><br>
+	Github: <a href="https://github.com/Chameleonhider/FreeTrack22">FreeTrack V2.2 download</a><br>
+	FreeTrack is a headtracking program, that utilizes a webcamera, LED(s) on your head and your CPU to provide head movement input to a game/program that supports FreeTrack protocol.<br>
+	First we'll look at how LEDs should be connected to a 5V DC power supply, and then we'll configure FreeTrack for use with ArmA3.<br>
+	If you want full 6DOF tracking, you should check out OpenTrack instead - it is easier to setup, still maintained and has fewer bugs.</p>
+	---
+<h1>Setting up LEDs</h1>
+	<p>An LED can not be hooked up to a random power source -- it will heat up and burn out instantly.<br>
+	Voltage and current ratings must be considered, and a resistor in series must be provided.<br>
+	Resistor is chosen according to the voltage of the power source (USB red-black is 5V±5% DC),
+	voltage drop of the LED (typically 3V), and rated current of the LED (typically 20mA).<br>
+	An LED resistor calculator is provided, as well as a table with pre-computed resistor values for common LEDs.<br>
+	<a href="https://ohmslawcalculator.com/led-resistor-calculator">LED resistor calculator</a></p>
+	---
+	<p>Example resistor values using 1 LED and 5 V power supply:</p>
+	<table>
+		<tr>
+			<th>Power Voltage, V</th>
+			<th>LED serial</th>
+			<th>LED Voltage, V</th>
+			<th>Current, mA</th>
+			<th>Resistor, Ohm</th>
+		</tr>
+		<tr>
+			<td>5 V DC</td>
+			<td>L-314LWC 3mm</td>
+	        <td>3.5 V</td>
+			<td>10 mA</td>
+			<td>150 Ohm</td>
+		</tr>
+		<tr>
+			<td>5 V DC</td>
+			<td>264-7SUBC 3mm</td>
+			<td>3.4 V</td>
+			<td>20 mA</td>
+	        <td>80 Ohm</td>
+		</tr>
+		<tr>
+			<td>5 V DC</td>
+			<td>334-15/T1C3-7TVA 5mm</td>
+			<td>2.8-3.6 V</td>
+			<td>20 mA</td>
+	        <td>110-70 Ohm</td>
+		</tr>
+		<tr>
+			<td>5 V DC</td>
+			<td>334-15/X2C5-1NSB 5mm</td>
+			<td>2.8-3.6 V</td>
+			<td>20 mA</td>
+	        <td>110-70 Ohm</td>
+		</tr>
+		<tr>
+			<td>5 V DC</td>
+			<td>OSW5DK8131A 8mm</td>
+			<td>3.1 V</td>
+			<td>20 mA</td>
+	        <td>95 Ohm</td>
+		</tr>
+	</table>
+	---
+	<p><b>Exact connection scheme:</b><br>
+		1. USB Red/Orange +5V<br>
+		2. Wire<br>
+		3. Resistor (recommended 200 Ohm)<br>
+		4. LED + (longer leg)<br>
+		5. LED<br>
+		6. LED - (shorter leg)<br>
+		7. Wire<br>
+		8. USB Black/Blue 0V (ground)<br>
+	</p>
+	---
+	<p>Sew on the LED to the front of a baseball cap, and plug in the USB cable.<br>
+	Make sure to use a disposable 5V DC power supply to confirm your choice of LED/resistor/wire is appropriate and will not short-circuit more expensive hardware.</p>
+	---
+<h1>Setting up FreeTrack</h1>
+	<p>FreeTrack GUI is quite intuitive and somewhat easy to setup. But there are several very important gotcha's that you need to pay attention to. It is best that you follow the next instructions step-by-step.</p>
+	---
+	<p><b>Have OpenTrack installed</b><br>
+	<a href="https://github.com/opentrack/opentrack/releases">OpenTrack Github</a></p>
+	---
+	<p><b>Run as administrator</b><br>
+	FreeTrack behaves better when you run as administrator. For example, camera settings are saved, there is a crosshair to help camera centering, etc.</p>
+	---
+	<p><b>Adjust "Stream" settings</b><br>
+	A 320x176 30fps runs better than 1080p 60fps -- simply because FreeTrack wastes fewer CPU cycles, and tracking quality is only marginally worse.</p>
+	---
+	<p><b>Adjust "Camera" settings</b><br>
+	Find "Exposure" and set it as low as possible. This will make overall camera image very dark, and so it will help contrast the LEDs from the background.<br>
+	Tick off any "auto" boxes, as some cameras might try to correct image - we don't need that. Make sure camera is zoomed out. Adjust Brightness/Contrast only if needed.</p>
+	---
+	<p><b>Adjust the main Threshold</b><br>
+	"Start", then pick up the slider in the main screen and slide it so just the LEDs are visible.</p>
+	---
+	<p><b>Pick the correct protocol Output</b><br>
+	If you are playing Arma3 or DCS, at the Output tab select just the "FreeTrack interface". (Yes, it works with DCS too, you need to find HeadTracker.dll plugin and put it into DCS/bin directory)</p>
+	---
+	<p><b>❗❗❗Know the right way to start Arma3❗❗❗</b><br>
+	Now this is the most tricky part, because Arma3 does not recognize FreeTrack out of the box:<br><br>
+	1. Install FreeTrack, install OpenTrack.<br>
+	2. Start FreeTrack, start OpenTrack.<br>
+	3. Click "Start" in FreeTrack, "Start" in OpenTrack.<br>
+	4. Launch Arma. If Arma didn't detect FreeTrack (or you launched OpenTrack after Arma), go to Options->Controls->Controller, click "Refresh".<br>
+	5. If headtracking is working, you can close OpenTrack.<br><br>
+	Points 2-5 need to be repeated on every computer restart. You can Start/Stop FreeTrack as you wish (to save CPU while not in Arma).</p>
+	---
+	<p><b>Don't be afraid to mix axis</b><br>
+	Single-point tracking doesn't have to be just Yaw/Pitch! You can mix in some Yaw->X and Pitch->Y too!<br>
+	(Arma has keybinds that allow you to adjust your head position, CTRL+Numpad)</p>
+	---
+	<p><b>Adjust all other settings</b><br>
+	Now that the main stuff is out of the way, feel free to adjust "Frame rate", "Point size", "Profile", "Curves" and other settings.</p>
+	---
+	<p><b>Edit settings manually</b><br>
+	Settings are saved at C:\Program Files (x86)\FreeTrack\Profiles</p>
+	---
+	Prepared free of charge by chameleon for 77th.
+</body>
+<!-- BODY ########################################################################################################## -->
+</html>
